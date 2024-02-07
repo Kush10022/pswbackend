@@ -50,13 +50,28 @@ async function sendEmail(emailType, userEmail, userId, firstName) {
     const Transporter = nodemailer.createTransport({
       service: 'Gmail',
       host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.MAILER_USER,
         pass: process.env.MAILER_PASS,
       },
     });
+
+    await new Promise((resolve, reject) => {
+      // verify connection configuration
+      Transporter.verify(function (error, success) {
+          if (error) {
+              logger.error(error);
+              console.log(error);
+              reject(error);
+          } else {
+              console.log("Server is ready to take our messages");
+              resolve(success);
+          }
+      });
+  });
+
 
     const mailOptions = {
       from: { name: 'PSW Project Dev Team', address: process.env.MAILER_USER },
@@ -80,16 +95,26 @@ async function sendEmail(emailType, userEmail, userId, firstName) {
     };
     
 
-    Transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        logger.error(err);
-        console.log(err);
-      } else {
-        logger.debug(info);
-        console.log(info);
-        return info;
-      }
+    await new Promise((resolve, reject) => {
+      Transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          logger.error(err);
+          reject(err);
+        } else {
+          logger.debug(info);
+          resolve(info);
+        }
+      });
     });
+
+    // Transporter.sendMail(mailOptions, (err, info) => {
+    //   if (err) {
+    //     logger.error(err);
+    //   } else {
+    //     logger.debug(info);
+    //     return info;
+    //   }
+    // });
   } catch (error) {
     logger.error(error);
     return;
