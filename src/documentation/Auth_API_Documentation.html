@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">API Documentation</h1>
+
+    <section class="mb-5">
+        <h2>Authentication Routes</h2>
+
+        <!-- Login -->
+        <div class="mb-3">
+            <h3>Login</h3>
+            <p><strong>Endpoint:</strong> <code>/v1/auth/login</code></p>
+            <p><strong>Method:</strong> POST</p>
+            <p>Authenticates a user by comparing the provided credentials with those stored in the database. If the credentials are valid, it returns a JWT token for accessing protected routes.</p>
+            <h4>Request Body:</h4>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>email</td>
+                        <td>String</td>
+                        <td>User's email address</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>String</td>
+                        <td>User's password</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Success Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "ok",
+  "message": "Login successful",
+  "token": "jwt.token.here"
+}
+            </pre>
+            <h4>Error Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 401,
+    "message": "Incorrect password"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 404,
+    "message": "User not found"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 500,
+    "message": "Server error"
+  }
+}
+            </pre>
+        </div>
+
+        <!-- Register -->
+        <div class="mb-3">
+            <h3>Register</h3>
+            <p><strong>Endpoint:</strong> <code>/v1/auth/register</code></p>
+            <p><strong>Method:</strong> POST</p>
+            <p>Registers a new user with the provided details. It hashes the password before saving the user to the database.</p>
+            <h4>Request Body:</h4>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>email</td>
+                        <td>String</td>
+                        <td>User's email address</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>String</td>
+                        <td>User's password</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>firstName</td>
+                        <td>String</td>
+                        <td>User's first name</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>lastName</td>
+                        <td>String</td>
+                        <td>User's last name</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>PSW</td>
+                        <td>Boolean</td>
+                        <td>Indicates if user is a PSW</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Success Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "ok",
+  "message": "User registered successfully"
+}
+            </pre>
+            <h4>Error Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 400,
+    "message": "User already exists"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 500,
+    "message": "Error creating user"
+  }
+}
+            </pre>
+        </div>
+
+        <!-- Verify Email -->
+        <div class="mb-3">
+            <h3>Verify Email</h3>
+            <p><strong>Endpoint:</strong> <code>/v1/auth/verifyemail</code></p>
+            <p><strong>Method:</strong> PATCH</p>
+            <p>Verifies a user's email address using a token sent to the user's email. This route updates the user's email verification status in the database.</p>
+            <h4>Request Body:</h4>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>token</td>
+                        <td>String</td>
+                        <td>Token sent to the user's email</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Success Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "ok",
+  "message": "Email verified successfully"
+}
+            </pre>
+            <h4>Error Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 400,
+    "message": "No token provided"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 400,
+    "message": "Invalid or expired token"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 500,
+    "message": "Error verifying email"
+  }
+}
+            </pre>
+        </div>
+
+        <!-- Password Reset Request -->
+        <div class="mb-3">
+            <h3>Password Reset Request</h3>
+            <p><strong>Endpoint:</strong> <code>/v1/auth/passwordreset</code></p>
+            <p><strong>Method:</strong> POST</p>
+            <p>Initiates a password reset process by sending a reset token to the user's registered email address if the user is found.</p>
+            <h4>Request Body:</h4>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>email</td>
+                        <td>String</td>
+                        <td>User's email address</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Success Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "ok",
+  "message": "Forgot password token created and sent to [user's email]"
+}
+            </pre>
+            <h4>Error Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 400,
+    "message": "No email provided"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 404,
+    "message": "User not found"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 500,
+    "message": "Error sending email"
+  }
+}
+            </pre>
+        </div>
+
+        <!-- Password Reset -->
+        <div class="mb-3">
+            <h3>Password Reset</h3>
+            <p><strong>Endpoint:</strong> <code>/v1/auth/passwordreset</code></p>
+            <p><strong>Method:</strong> PATCH</p>
+            <p>Resets the user's password using the token sent to the user's email and a new password provided by the user.</p>
+            <h4>Request Body:</h4>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>token</td>
+                        <td>String</td>
+                        <td>Token sent to the user's email</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>String</td>
+                        <td>New password to set for the user</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Success Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "ok",
+  "message": "Password reset successfully"
+}
+            </pre>
+            <h4>Error Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 400,
+    "message": "No token provided"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 400,
+    "message": "Invalid or expired token"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 500,
+    "message": "Error resetting password"
+  }
+}
+            </pre>
+        </div>
+
+        <!-- Verify Password Reset Token -->
+        <div class="mb-3">
+            <h3>Verify Password Reset Token</h3>
+            <p><strong>Endpoint:</strong> <code>/v1/auth/passwordreset</code></p>
+            <p><strong>Method:</strong> GET</p>
+            <p>Verifies the validity of a password reset token before allowing a password reset operation. This step is crucial for front-end applications to ensure the token is valid and not expired.</p>
+            <h4>Query Parameters:</h4>
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>token</td>
+                        <td>String</td>
+                        <td>Token sent to the user's email for reset</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Success Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "ok",
+  "message": "Token is valid"
+}
+            </pre>
+            <h4>Error Response:</h4>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 400,
+    "message": "No token provided"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 400,
+    "message": "Invalid or expired token"
+  }
+}
+            </pre>
+            <pre class="bg-light p-2">
+{
+  "status": "error",
+  "error": {
+    "code": 500,
+    "message": "Error verifying token"
+  }
+}
+            </pre>
+        </div>
+    </section>
+
+    <section>
+        <h2>Notes</h2>
+        <ol>
+            <li><strong>Security Considerations:</strong> Always use HTTPS to make API requests to ensure data privacy and security, especially for authentication routes and any operations involving sensitive user information.</li>
+            <li><strong>Rate Limiting:</strong> Be aware of any rate limits that apply to the API endpoints. Exceeding these limits may result in temporary suspension of access to the API services.</li>
+            <li><strong>Authentication Tokens:</strong> The JWT token provided upon successful authentication must be included in the `Authorization` header as a Bearer token for accessing protected routes. Example: `Authorization: Bearer <your_jwt_token_here>`.</li>
+            <li><strong>Token Expiry:</strong> JWT tokens have an expiration time. Ensure that your application handles token expiry gracefully, prompting users to re-authenticate if necessary.</li>
+            <li><strong>Error Handling:</strong> Pay close attention to the error codes and messages returned by the API. Proper error handling in your application will improve the user experience and aid in troubleshooting.</li>
+            <li><strong>Versioning:</strong> The API endpoints are versioned (e.g., `/v1/auth/login`). It's important to use the correct version to ensure compatibility and access to the latest features.</li>
+            <li><strong>Data Validation:</strong> Input data for requests should be validated on the client side to ensure it meets the API's expected format, reducing unnecessary requests and improving application efficiency.</li>
+            <li><strong>Deprecation Policy:</strong> Keep an eye on the API documentation for any announcements regarding deprecated endpoints or features, and update your application to use the latest versions as needed.</li>
+            <li><strong>User Privacy:</strong> Ensure that your application respects user privacy, complying with relevant laws and regulations regarding data protection and privacy, such as GDPR or CCPA.</li>
+            <li><strong>Feedback and Support:</strong> If you encounter any issues or have suggestions for improving the API, contact the support email <strong>pswprojectdevp@gmail.com</strong>.</li>
+        </ol>
+    </section>
+
+</div>
+
+<!-- Bootstrap JS and its dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.6/dist/umd/umd.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
